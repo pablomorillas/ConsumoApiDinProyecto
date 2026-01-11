@@ -1,16 +1,20 @@
-// Componente funcional que sirve como layout principal para las páginas hijas
-// Renderiza el contenido de las rutas anidadas mediante <Outlet />
 import { Outlet } from "react-router-dom";
 
+/**
+ * Functional component that serves as the main layout for child pages.
+ * Renders nested routes content using <Outlet />.
+ * 
+ * @component
+ */
 function Content() {
   return (
     <main
-      id="main-content"          // ID para accesibilidad y saltar al contenido principal
-      role="main"                // Define el landmark principal para lectores de pantalla
-      tabIndex="-1"              // Permite que el main sea foco programáticamente
+      id="main-content"          // ID for accessibility and skip-to-content links
+      role="main"                // Defines the main landmark for screen readers
+      tabIndex="-1"              // Allows the main element to strictly receive programmatic focus
       className="min-h-screen bg-linear-to-br from-gray-100 to-gray-200 flex flex-col items-center justify-start p-8 pt-6 gap-8"
     >
-      {/* Renderiza el contenido de las rutas hijas */}
+      {/* Renders the content of child routes */}
       <Outlet />
     </main>
   )

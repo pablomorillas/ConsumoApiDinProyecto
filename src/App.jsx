@@ -7,7 +7,7 @@ import { Routes, Route } from "react-router-dom";
 import Nav from './components/Nav'
 import Section from './components/Section'
 import BuildingPage from './pages/BuildingPage'
-import DetalleEdificios from './pages/DetalleEdificios.jsx'
+import DetalleEdificios from './components/DetalleEdificios.jsx'
 import Footer from './components/Footer.jsx'
 
 function App() {
@@ -36,7 +36,7 @@ function App() {
       </Routes>
 
       {/* Pie de página visible en todas las páginas */}
-      <Footer/>
+      <Footer />
     </>
   )
 }
