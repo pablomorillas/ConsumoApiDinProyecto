@@ -1,13 +1,17 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import "../assets/index.css";
+import { useCreateProduct } from '../hook/useCreateProductos';
 
 /**
  * Functional component that renders a form to create a new building.
- * Handles form state, validation, and submission simulation.
+ * Handles form state, validation, and submission.
  *
  * @component
  */
 function BuildingForm() {
+    const navigate = useNavigate();
+    const fileInputRef = useRef(null);
 
     const [formData, setFormData] = useState({
         nombre: "",
@@ -17,7 +21,8 @@ function BuildingForm() {
         imagen: "",
     });
 
-    const [error, setError] = useState({});
+    const [validationErrors, setValidationErrors] = useState({});
+    const { addProduct, loading, error: apiError } = useCreateProduct();
 
     const handleChange = (e) => {
         const { id, value, type, checked } = e.target;
@@ -27,7 +32,7 @@ function BuildingForm() {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         let newErrors = {};
@@ -50,23 +55,32 @@ function BuildingForm() {
             newErrors.categoria = "Selecciona una categoría válida.";
         }
 
-        // Validación opcional para imagen, solo si no está vacía checkear formato
-        // Si es obligatoria: (!formData.imagen) ...
-
         if (Object.keys(newErrors).length > 0) {
-            setError(newErrors);
+            setValidationErrors(newErrors);
             return;
         }
 
-        // Simulación de envío
-        setError({});
-        console.log("Nuevo Edificio:", formData);
-        alert("Edificio 'creado' correctamente (revisar consola)");
+        // Envío de datos real
+        setValidationErrors({});
 
-        // Reset form opcional
-        // setFormData({...});
+        const ok = await addProduct(formData);
+
+        if (ok) {
+            alert(`¡El edificio "${formData.nombre}" se ha guardado correctamente!`);
+
+            // Reset form
+            setFormData({
+                nombre: "",
+                descripcion: "",
+                precio: "",
+                categoria: "",
+                imagen: "",
+            });
+
+            if (fileInputRef.current) fileInputRef.current.value = null;
+            navigate("/edificios");
+        }
     };
-
 
     return (
         <div className="form-container box">
@@ -76,15 +90,16 @@ function BuildingForm() {
 
                 {/* Nombre */}
                 <div className="form-group">
-                    <label htmlFor="nombre">Nombre (min 5 letras):</label>
+                    <label htmlFor="nombre">Nombre:</label>
                     <input
                         id="nombre"
                         type="text"
                         value={formData.nombre}
                         onChange={handleChange}
-                        className={error.nombre ? "input-error" : ""}
+                        placeholder='Introduce el nombre (min 5 letras)'
+                        className={validationErrors.nombre ? "input-error" : ""}
                     />
-                    {error.nombre && <span className="error-message">{error.nombre}</span>}
+                    {validationErrors.nombre && <span className="error-message">{validationErrors.nombre}</span>}
                 </div>
 
                 {/* Descripción */}
@@ -94,10 +109,11 @@ function BuildingForm() {
                         id="descripcion"
                         value={formData.descripcion}
                         onChange={handleChange}
-                        className={error.descripcion ? "input-error" : ""}
+                        placeholder='Introduce una descripción (min 10 letras)'
+                        className={validationErrors.descripcion ? "input-error" : ""}
                         rows="3"
                     />
-                    {error.descripcion && <span className="error-message">{error.descripcion}</span>}
+                    {validationErrors.descripcion && <span className="error-message">{validationErrors.descripcion}</span>}
                 </div>
 
                 {/* Precio */}
@@ -106,11 +122,12 @@ function BuildingForm() {
                     <input
                         id="precio"
                         type="number"
+                        placeholder='Introduce un precio positivo'
                         value={formData.precio}
                         onChange={handleChange}
-                        className={error.precio ? "input-error" : ""}
+                        className={validationErrors.precio ? "input-error" : ""}
                     />
-                    {error.precio && <span className="error-message">{error.precio}</span>}
+                    {validationErrors.precio && <span className="error-message">{validationErrors.precio}</span>}
                 </div>
 
                 {/* Categoría */}
@@ -120,16 +137,16 @@ function BuildingForm() {
                         id="categoria"
                         value={formData.categoria}
                         onChange={handleChange}
-                        className={error.categoria ? "input-error" : ""}
+                        className={validationErrors.categoria ? "input-error" : ""}
                     >
-                        <option value="">-- Seleccionar --</option>
+                        <option value="" disabled>Seleccione una categoría</option>
                         <option value="residencial">Residencial</option>
                         <option value="oficinas">Oficinas</option>
                         <option value="comercial">Comercial</option>
                         <option value="industrial">Industrial</option>
                         <option value="mixto">Mixto</option>
                     </select>
-                    {error.categoria && <span className="error-message">{error.categoria}</span>}
+                    {validationErrors.categoria && <span className="error-message">{validationErrors.categoria}</span>}
                 </div>
 
                 {/* Imagen */}
@@ -144,9 +161,14 @@ function BuildingForm() {
                     />
                 </div>
 
-
-
-                <button type="submit" className="mt-4">Crear Edificio</button>
+                {apiError && (
+                    <p role="alert" className="mt-4 text-sm text-red-600">
+                        {apiError}
+                    </p>
+                )}
+                <button type="submit" className="mt-4">
+                    {loading ? "Guardando..." : "Crear Edificio"}
+                </button>
             </form>
         </div>
     );

@@ -19,11 +19,24 @@ a {
   color: inherit;
 }
 
-button {
+button,
+.nav-link {
   cursor: pointer;
   border: none;
-  background: none;
+  background: var(--color-primary);
+  color: var(--color-secondary);
   font-family: inherit;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  transition: 0.3s ease;
+  display: inline-block;
+  text-align: center;
+}
+
+button:hover,
+.nav-link:hover {
+  color: var(--color-primary) !important;
+  background-color: var(--color-secondary) !important;
 }
 
 img {
@@ -162,6 +175,9 @@ textarea {
 
   .desktop-only {
     display: flex !important;
+    align-items: center;
+    gap: 1.5rem;
+    margin-left: auto;
   }
 }
 
@@ -175,6 +191,18 @@ textarea {
   clip: rect(0, 0, 0, 0) !important;
   white-space: nowrap !important;
   border: 0 !important;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 .clearfix::after {
@@ -379,25 +407,36 @@ img:focus {
   display: block;
 }
 
-button {
-  cursor: pointer;
-  border: none;
-  background: var(--color-primary);
-  color: var(--color-secondary);
-  font-family: inherit;
-  padding: 0.6rem 1.2rem;
-  border-radius: 8px;
-  transition: 0.3s ease;
-}
-
-button:hover {
-  color: var(--color-primary);
-  background-color: var(--color-secondary);
-}
-
 nav {
   background-color: var(--color-primary);
   padding: 1rem;
+}
+
+/* --- ESTILOS BARRA NAVEGACIÓN --- */
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.nav-logo-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+}
+
+.nav-brand-title {
+  color: #ffffff !important;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
 }
 
 footer {
