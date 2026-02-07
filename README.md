@@ -91,3 +91,31 @@ La aplicación incorpora varias **prácticas de accesibilidad (a11y)** y usabili
 4. **Contraste y legibilidad**: Colores primarios y secundarios bien definidos con variables CSS  
 5. **Responsividad**: Layout adaptativo con Tailwind; menú hamburguesa para móviles  
 6. **Feedback visual**: Hover y transiciones suaves (`transition-colors`) en enlaces y botones  
+
+## Reflexión técnica en despliegue
+
+**¿Dónde está desplegada cada parte? ¿Qué problemas has encontrado durante el despliegue?**
+
+- La parte del frontEnd se ha deslpegado en Vercel.
+
+- La parte del backEnd se ha desplegado en Render.
+
+- Los problemas que he encontrado durante el despliegue han sido:
+
+  - En el frontEnd no he encontrado demasiados problemas, solo fue que a veces no encontraba los productos, pero lo solucioné cambiando la url de la api.
+
+  - En el backEnd he encontrado problemas con la base de datos, ya que no se conectaba con la aplicación. Lo solucioné cambiando la url de la api.
+
+  - Cabe destacar que he tenido problemas de espacio debido a intentar hacer la aplicación de escritorio con Tauri, aunque no fuera un problema como tal del proyecto, me ocupaba mucho espacio en el disco duro.
+
+**Qué diferencias existen entre web y escritorio**
+
+- **¿Qué ventajas tiene el despliegue web frente al de escritorio?**
+
+  - La principal ventaja, es que no requiere de una instalación, se puede acceder desde cualquier dispositivo con navegador y acceso a internet.
+
+  - Otra ventaja es que se puede actualizar la aplicación sin necesidad de que los usuarios instalen nada.
+
+- **¿Por qué Electron no sustituye a una web?**
+
+  - Por lo mencionado anteriormente, la web es mas accesible y no requiere de una instalación, además que en tema de actualizaciones es más sencillo.
