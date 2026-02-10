@@ -2,11 +2,15 @@ import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Edifice from "../components/Edifice";
 import SearchBar from "../components/SearchBar";
-import { useProductos } from "../hook/useProductos"; // Importamos el Hook
+import { useProductos } from "../hook/useProductos";
+
+import useVoiceRecognition from "../hook/useVoiceRecognition";
+import { Mic } from "lucide-react"; // npm install lucide-react
 
 function BuildingPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const { data: productos, loading, error } = useProductos();
+    const voice = useVoiceRecognition((text) => setSearchTerm(text));
 
     const filteredProductos = useMemo(() => {
         if (!searchTerm) return productos;
@@ -16,6 +20,8 @@ function BuildingPage() {
         );
     }, [searchTerm, productos]);
 
+    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+
     return (
         <>
             <h2 className="text-2xl font-bold mb-4">Edificios actualizados</h2>
@@ -23,11 +29,29 @@ function BuildingPage() {
                 Edificios gestionados desde el panel de administración.
             </p>
 
-            <SearchBar
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                placeholder="Buscar por nombre..."
-            />
+            <div className="flex items-center gap-2 max-w-md w-full mx-auto">
+                <SearchBar
+                    searchTerm={searchTerm}
+                    onSearchChange={setSearchTerm}
+                    placeholder="Buscar por nombre..."
+                />
+
+                {!isMobile && voice.isSupported && (
+                    <button
+                        type="button"
+                        onClick={voice.startListening}
+                        className={`p-2 rounded-md transition
+        ${voice.isListening
+                                ? "bg-red-100 text-red-500 animate-pulse"
+                                : "bg-grey-5 text-black-2 hover:bg-info hover:text-white"
+                            }`}
+                        title="Buscar por voz"
+                    >
+                        <Mic size={20} />
+                    </button>
+                )}
+            </div>
+
 
             {/* Zona de contenido */}
             <div className="mt-8 min-h-64 w-full">
