@@ -24,33 +24,40 @@ function BuildingPage() {
 
     return (
         <>
-            <h2 className="text-2xl font-bold mb-4">Edificios actualizados</h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="contenedor_h1" style={{ textAlign: 'center', marginBottom: '0.5rem' }}>
+                Edificios actualizados
+            </h2>
+            <p className="contenedor_p" style={{ textAlign: 'center', color: 'var(--color-grey-2)', marginBottom: '2rem' }}>
                 Edificios gestionados desde el panel de administración.
             </p>
 
-            <div className="flex items-center gap-2 max-w-md w-full mx-auto">
-                <SearchBar
-                    searchTerm={searchTerm}
-                    onSearchChange={setSearchTerm}
-                    placeholder="Buscar por nombre..."
-                />
-
+            <SearchBar
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                placeholder="Buscar por nombre..."
+                onVoiceActivate={voice.startListening}
+                isMobile={isMobile}
+                voiceSupported={voice.isSupported}
+            >
                 {!isMobile && voice.isSupported && (
                     <button
                         type="button"
                         onClick={voice.startListening}
-                        className={`p-2 rounded-md transition
+                        className={`p-2 rounded-md transition flex-shrink-0
         ${voice.isListening
                                 ? "bg-red-100 text-red-500 animate-pulse"
                                 : "bg-grey-5 text-black-2 hover:bg-info hover:text-white"
                             }`}
                         title="Buscar por voz"
+                        style={{
+                            height: '44px',
+                            minWidth: '44px'
+                        }}
                     >
                         <Mic size={20} />
                     </button>
                 )}
-            </div>
+            </SearchBar>
 
 
             {/* Zona de contenido */}

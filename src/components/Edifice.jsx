@@ -12,14 +12,20 @@
  */
 import Card from "./Card.jsx";
 
+const PLACEHOLDER_IMAGE = "https://placehold.co/600x400/e5e7eb/6b7280?text=Sin+Imagen";
+
 function Edifice({ name, photo, price, description, category }) {
   return (
     <Card>
       {/* Building image with alt text for accessibility */}
       <figure>
         <img
-          src={photo}
+          src={photo || PLACEHOLDER_IMAGE}
           alt={`${name} - Category: ${category}`}
+          onError={(e) => {
+            e.target.onerror = null; // Prevent infinite loop
+            e.target.src = PLACEHOLDER_IMAGE;
+          }}
         />
       </figure>
 

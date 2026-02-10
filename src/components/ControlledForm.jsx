@@ -12,7 +12,7 @@ function BuildingForm() {
     description: "",
     price: "",
     category: "",
-    photo: "", 
+    photo: "",
   });
 
   const [validationErrors, setValidationErrors] = useState({});
@@ -167,16 +167,45 @@ function BuildingForm() {
         </div>
 
         {/* Imagen desde local */}
-        <label className="block">
-          <span className="text-sm font-medium">Imagen del edificio</span>
+        <div className="form-group">
+          <label htmlFor="photo">Imagen del edificio:</label>
           <input
             ref={fileInputRef}
+            id="photo"
             type="file"
             accept="image/*"
             onChange={handleFileChange}
-            className="mt-1 block w-full text-sm"
+            style={{
+              padding: '0.5rem',
+              border: '1px solid var(--color-grey-3)',
+              borderRadius: '6px',
+              cursor: 'pointer'
+            }}
           />
-        </label>
+          <p style={{ fontSize: '0.875rem', color: 'var(--color-grey-3)', marginTop: '0.5rem' }}>
+            Selecciona una imagen desde tu dispositivo (JPG, PNG, WebP, etc.)
+          </p>
+
+          {/* Image preview */}
+          {formData.photo && (
+            <div style={{ marginTop: '1rem' }}>
+              <p style={{ fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
+                Vista previa:
+              </p>
+              <img
+                src={formData.photo}
+                alt="Vista previa"
+                style={{
+                  maxWidth: '300px',
+                  maxHeight: '200px',
+                  borderRadius: '8px',
+                  border: '2px solid var(--color-grey-4)',
+                  objectFit: 'cover'
+                }}
+              />
+            </div>
+          )}
+        </div>
 
         {apiError && (
           <p role="alert" className="mt-4 text-sm text-red-600">

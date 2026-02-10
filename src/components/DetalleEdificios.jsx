@@ -1,10 +1,11 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { useState, useEffect, useContext } from 'react'
-import { getProductById } from '../services/Service'
+import { useContext } from 'react'
 import Section from './Section.jsx'
 import { UserContext } from '../context/UserContext'
 import { useDeleteProduct } from '../hook/useDeleteProducto'
+import { useProducto } from '../hook/useProducto'
 
+const PLACEHOLDER_IMAGE = "https://placehold.co/900x600/e5e7eb/6b7280?text=Sin+Imagen";
 
 /**
  * Functional component that displays the detailed information of a specific building.
@@ -19,36 +20,18 @@ function DetalleEdificio({ edificioData }) {
     const { id } = useParams()
     const { userLogged } = useContext(UserContext)
     const { removeProduct, loading: deleting } = useDeleteProduct()
-    const [edificio, setEdificio] = useState(edificioData || null)
-    const [loading, setLoading] = useState(!edificioData)
-    const [error, setError] = useState(null)
 
-    useEffect(() => {
-        if (edificioData) return
+    // Use the hook to fetch product data
+    const { producto: edificio, loading, error } = useProducto(edificioData ? null : id)
 
-        const fetchEdificio = async () => {
-            try {
-                const data = await getProductById(id)
-                if (data) {
-                    setEdificio(data)
-                } else {
-                    setError("Edificio no encontrado")
-                }
-            } catch (err) {
-                setError("Error al cargar el edificio")
-            } finally {
-                setLoading(false)
-            }
-        }
-
-        fetchEdificio()
-    }, [id, edificioData])
+    // If edificioData is provided (for Storybook), use it instead
+    const displayEdificio = edificioData || edificio
 
     if (loading) {
         return <div className="p-8 text-center">Cargando detalles...</div>
     }
 
-    if (error || !edificio) {
+    if (error || !displayEdificio) {
         return <div className="p-8 text-center">{error || "Edificio no encontrado"}</div>
     }
 
@@ -72,21 +55,25 @@ function DetalleEdificio({ edificioData }) {
             </button>
 
             {/* Main building information */}
-            <h2 className='contenedor_h2'>{edificio.name}</h2>
+            <h2 className='contenedor_h2'>{displayEdificio.name}</h2>
             <img
-                src={edificio.photo}
-                alt={edificio.name}
+                src={displayEdificio.photo || PLACEHOLDER_IMAGE}
+                alt={displayEdificio.name}
                 style={{ maxWidth: '900px', display: 'block', margin: '20px auto', borderRadius: '12px' }}
+                onError={(e) => {
+                    e.target.onerror = null; // Prevent infinite loop
+                    e.target.src = PLACEHOLDER_IMAGE;
+                }}
             />
-            <h3 className='contenedor_h3'>Precio: ${edificio.price?.toLocaleString()}</h3>
-            <h4 className='contenedor_h4'>Categoría: {edificio.category}</h4>
-            <p className='contenedor_p'>{edificio.description}</p>
+            <h3 className='contenedor_h3'>Precio: ${displayEdificio.price?.toLocaleString()}</h3>
+            <h4 className='contenedor_h4'>Categoría: {displayEdificio.category}</h4>
+            <p className='contenedor_p'>{displayEdificio.description}</p>
 
             {userLogged && (
                 <div style={{ marginTop: '40px', textAlign: 'center' }}>
                     <button
                         onClick={async () => {
-                            if (window.confirm(`¿Estás seguro de que deseas eliminar "${edificio.name}"?`)) {
+                            if (window.confirm(`¿Estás seguro de que deseas eliminar "${displayEdificio.name}"?`)) {
                                 const success = await removeProduct(id);
                                 if (success) {
                                     navigate('/edificios');
